@@ -161,18 +161,17 @@ public class ActivityHelper implements Application.ActivityLifecycleCallbacks {
     }
 
     public static void registerActivityStateDelegate(ActivityStateDelegate activityStateDelegate) {
+        getInstance().checkInitialized();
         if (!getInstance().getActivityStateDelegates().contains(activityStateDelegate)) {
             getInstance().getActivityStateDelegates().add(activityStateDelegate);
         }
     }
 
     public static void removeActivityStateDelegate(ActivityStateDelegate activityStateDelegate) {
+        getInstance().checkInitialized();
         getInstance().getActivityStateDelegates().remove(activityStateDelegate);
     }
 
-
-
-    
     /* Properties */
     private boolean initialized;
     protected ActivityHelper setInitialized(boolean initialized) {
