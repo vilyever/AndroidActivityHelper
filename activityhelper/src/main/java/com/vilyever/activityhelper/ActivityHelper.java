@@ -160,6 +160,18 @@ public class ActivityHelper implements Application.ActivityLifecycleCallbacks {
         getInstance().getActivities().clear();
     }
 
+    public static void registerActivityStateDelegate(ActivityStateDelegate activityStateDelegate) {
+        if (!getInstance().getActivityStateDelegates().contains(activityStateDelegate)) {
+            getInstance().getActivityStateDelegates().add(activityStateDelegate);
+        }
+    }
+
+    public static void removeActivityStateDelegate(ActivityStateDelegate activityStateDelegate) {
+        getInstance().getActivityStateDelegates().remove(activityStateDelegate);
+    }
+
+
+
     
     /* Properties */
     private boolean initialized;
@@ -207,6 +219,14 @@ public class ActivityHelper implements Application.ActivityLifecycleCallbacks {
         return topActivity;
     }
 
+    private ArrayList<ActivityStateDelegate> activityStateDelegates;
+    protected ArrayList<ActivityStateDelegate> getActivityStateDelegates() {
+        if (this.activityStateDelegates == null) {
+            this.activityStateDelegates = new ArrayList<ActivityStateDelegate>();
+        }
+        return this.activityStateDelegates;
+    }
+
     /* Overrides */     
      
     /* Delegates */
@@ -215,36 +235,81 @@ public class ActivityHelper implements Application.ActivityLifecycleCallbacks {
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
         getActivities().add(activity);
         setTopActivity(activity);
+
+        ArrayList<ActivityStateDelegate> delegatesCopy =
+                (ArrayList<ActivityStateDelegate>) getActivityStateDelegates().clone();
+        int count = delegatesCopy.size();
+        for (int i = 0; i < count; ++i) {
+            delegatesCopy.get(i).onActivityCreated(activity, savedInstanceState);
+        }
     }
 
     @Override
     public void onActivityStarted(Activity activity) {
 
+        ArrayList<ActivityStateDelegate> delegatesCopy =
+                (ArrayList<ActivityStateDelegate>) getActivityStateDelegates().clone();
+        int count = delegatesCopy.size();
+        for (int i = 0; i < count; ++i) {
+            delegatesCopy.get(i).onActivityStarted(activity);
+        }
     }
 
     @Override
     public void onActivityResumed(Activity activity) {
         setTopActivity(activity);
+
+        ArrayList<ActivityStateDelegate> delegatesCopy =
+                (ArrayList<ActivityStateDelegate>) getActivityStateDelegates().clone();
+        int count = delegatesCopy.size();
+        for (int i = 0; i < count; ++i) {
+            delegatesCopy.get(i).onActivityResumed(activity);
+        }
     }
 
     @Override
     public void onActivityPaused(Activity activity) {
 
+        ArrayList<ActivityStateDelegate> delegatesCopy =
+                (ArrayList<ActivityStateDelegate>) getActivityStateDelegates().clone();
+        int count = delegatesCopy.size();
+        for (int i = 0; i < count; ++i) {
+            delegatesCopy.get(i).onActivityPaused(activity);
+        }
     }
 
     @Override
     public void onActivityStopped(Activity activity) {
 
+        ArrayList<ActivityStateDelegate> delegatesCopy =
+                (ArrayList<ActivityStateDelegate>) getActivityStateDelegates().clone();
+        int count = delegatesCopy.size();
+        for (int i = 0; i < count; ++i) {
+            delegatesCopy.get(i).onActivityStopped(activity);
+        }
     }
 
     @Override
     public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
 
+        ArrayList<ActivityStateDelegate> delegatesCopy =
+                (ArrayList<ActivityStateDelegate>) getActivityStateDelegates().clone();
+        int count = delegatesCopy.size();
+        for (int i = 0; i < count; ++i) {
+            delegatesCopy.get(i).onActivitySaveInstanceState(activity, outState);
+        }
     }
 
     @Override
     public void onActivityDestroyed(Activity activity) {
         getActivities().remove(activity);
+
+        ArrayList<ActivityStateDelegate> delegatesCopy =
+                (ArrayList<ActivityStateDelegate>) getActivityStateDelegates().clone();
+        int count = delegatesCopy.size();
+        for (int i = 0; i < count; ++i) {
+            delegatesCopy.get(i).onActivityDestroyed(activity);
+        }
     }
      
     /* Private Methods */
