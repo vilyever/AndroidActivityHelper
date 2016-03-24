@@ -45,8 +45,10 @@ public class ActivityHelper implements Application.ActivityLifecycleCallbacks {
      * @param application 当前应用application
      */
     public static void initialize(Application application) {
-        getInstance().setApplication(application);
-        getInstance().setInitialized(true);
+        if (!getInstance().isInitialized()) {
+            getInstance().setApplication(application);
+            getInstance().setInitialized(true);
+        }
     }
 
     /**
@@ -59,7 +61,8 @@ public class ActivityHelper implements Application.ActivityLifecycleCallbacks {
     @Nullable
     @Deprecated
     public static Activity findResumedActivity() {
-        if (getInstance().isInitialized()) {
+        if (getInstance().isInitialized()
+                && findTopActivity() != null) {
             try {
                 Field resumedField = Activity.class.getDeclaredField("mResumed");
                 resumedField.setAccessible(true);
