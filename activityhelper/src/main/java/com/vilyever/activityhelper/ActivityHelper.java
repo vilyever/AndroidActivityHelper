@@ -151,8 +151,8 @@ public class ActivityHelper implements Application.ActivityLifecycleCallbacks {
     public static void finishAllActivities() {
         getInstance().checkInitialized();
 
-        ArrayList<Activity> activitiesCopy =
-                (ArrayList<Activity>) getInstance().getActivities().clone();
+        LinkedList<Activity> activitiesCopy =
+                (LinkedList<Activity>) getInstance().getActivities().clone();
         int count = activitiesCopy.size();
         for (int i = 0; i < count; ++i) {
             if (activitiesCopy.get(i) != null) {
@@ -161,6 +161,11 @@ public class ActivityHelper implements Application.ActivityLifecycleCallbacks {
         }
 
         getInstance().getActivities().clear();
+    }
+
+    public static void exitApplication() {
+        finishAllActivities();
+        System.exit(0);
     }
 
     public static void registerActivityStateDelegate(ActivityStateDelegate activityStateDelegate) {
