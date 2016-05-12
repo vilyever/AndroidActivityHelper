@@ -17,7 +17,7 @@ Step 2. Add the dependency in the form
 
 ```gradle
 dependencies {
-  compile 'com.github.vilyever:AndroidActivityHelper:1.1.2'
+  compile 'com.github.vilyever:AndroidActivityHelper:1.1.3'
 }
 ```
 
