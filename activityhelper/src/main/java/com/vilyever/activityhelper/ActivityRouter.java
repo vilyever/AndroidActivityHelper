@@ -52,6 +52,10 @@ public class ActivityRouter implements Application.ActivityLifecycleCallbacks {
         getInstance().getActivityMap().put(activityIdentifier, activityClazz);
     }
 
+    public static Class<?> getBindedActivityClass(String activityIdentifier) {
+        return getInstance().getActivityMap().get(activityIdentifier);
+    }
+
     /** {@link ActivityRouter#nativeStartActivity(String, Bundle, ActivityIntentDelegate)} */
     public static void startActivity(String activityIdentifier) {
         startActivity(activityIdentifier, null, null);

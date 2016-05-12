@@ -141,7 +141,7 @@ public class ActivityHelper implements Application.ActivityLifecycleCallbacks {
      * @return 当前Activity
      */
     public static Activity findTopActivity() {
-        getInstance().checkInitialized();
+        getInstance().internalCheckInitialized();
         return getInstance().getTopActivity();
     }
 
@@ -149,7 +149,7 @@ public class ActivityHelper implements Application.ActivityLifecycleCallbacks {
      * 结束所有activity
      */
     public static void finishAllActivities() {
-        getInstance().checkInitialized();
+        getInstance().internalCheckInitialized();
 
         LinkedList<Activity> activitiesCopy =
                 (LinkedList<Activity>) getInstance().getActivities().clone();
@@ -169,14 +169,14 @@ public class ActivityHelper implements Application.ActivityLifecycleCallbacks {
     }
 
     public static void registerActivityStateDelegate(ActivityStateDelegate activityStateDelegate) {
-        getInstance().checkInitialized();
+        getInstance().internalCheckInitialized();
         if (!getInstance().getActivityStateDelegates().contains(activityStateDelegate)) {
             getInstance().getActivityStateDelegates().add(activityStateDelegate);
         }
     }
 
     public static void removeActivityStateDelegate(ActivityStateDelegate activityStateDelegate) {
-        getInstance().checkInitialized();
+        getInstance().internalCheckInitialized();
         getInstance().getActivityStateDelegates().remove(activityStateDelegate);
     }
 
@@ -240,7 +240,7 @@ public class ActivityHelper implements Application.ActivityLifecycleCallbacks {
     /** {@link Application.ActivityLifecycleCallbacks} */
     @Override
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-        getActivities().add(activity);
+        internalCheckActivityAdded(activity);
         setTopActivity(activity);
 
         ArrayList<ActivityStateDelegate> delegatesCopy =
@@ -253,6 +253,7 @@ public class ActivityHelper implements Application.ActivityLifecycleCallbacks {
 
     @Override
     public void onActivityStarted(Activity activity) {
+        internalCheckActivityAdded(activity);
 
         ArrayList<ActivityStateDelegate> delegatesCopy =
                 (ArrayList<ActivityStateDelegate>) getActivityStateDelegates().clone();
@@ -264,6 +265,7 @@ public class ActivityHelper implements Application.ActivityLifecycleCallbacks {
 
     @Override
     public void onActivityResumed(Activity activity) {
+        internalCheckActivityAdded(activity);
         setTopActivity(activity);
 
         ArrayList<ActivityStateDelegate> delegatesCopy =
@@ -276,6 +278,7 @@ public class ActivityHelper implements Application.ActivityLifecycleCallbacks {
 
     @Override
     public void onActivityPaused(Activity activity) {
+        internalCheckActivityAdded(activity);
 
         ArrayList<ActivityStateDelegate> delegatesCopy =
                 (ArrayList<ActivityStateDelegate>) getActivityStateDelegates().clone();
@@ -287,6 +290,7 @@ public class ActivityHelper implements Application.ActivityLifecycleCallbacks {
 
     @Override
     public void onActivityStopped(Activity activity) {
+        internalCheckActivityAdded(activity);
 
         ArrayList<ActivityStateDelegate> delegatesCopy =
                 (ArrayList<ActivityStateDelegate>) getActivityStateDelegates().clone();
@@ -298,6 +302,7 @@ public class ActivityHelper implements Application.ActivityLifecycleCallbacks {
 
     @Override
     public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+        internalCheckActivityAdded(activity);
 
         ArrayList<ActivityStateDelegate> delegatesCopy =
                 (ArrayList<ActivityStateDelegate>) getActivityStateDelegates().clone();
@@ -324,9 +329,15 @@ public class ActivityHelper implements Application.ActivityLifecycleCallbacks {
     /**
      * 检查是否初始化
      */
-    private void checkInitialized() {
+    private void internalCheckInitialized() {
         if (!isInitialized()) {
             throw new IllegalStateException("ActivityHelper is not initialized, which must initialize with application.");
+        }
+    }
+
+    private void internalCheckActivityAdded(Activity activity) {
+        if (!getActivities().contains(activity)) {
+            getActivities().add(activity);
         }
     }
 }
